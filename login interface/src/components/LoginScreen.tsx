@@ -155,15 +155,38 @@ export default function LoginScreen({ onAuthSuccess }: LoginScreenProps) {
               <span className="w-1.5 h-1.5 rounded-full bg-green-400 animate-pulse" />
               SECURE LINK ACTIVE
             </div>
-            <ScrollFloat
-              scrollContainerRef={rightSectionRef}
-              containerClassName="text-3xl font-semibold tracking-tight text-white"
-              textClassName="text-3xl font-semibold text-white font-sans font-bold text-center lg:text-left"
-              scrollStart="top bottom"
-              scrollEnd="bottom center"
-            >
-              {isLoginMode ? 'Welcome back' : 'Register Operator'}
-            </ScrollFloat>
+            {isLoginMode ? (
+              <div className="flex flex-col gap-0 select-none">
+                <ScrollFloat
+                  scrollContainerRef={rightSectionRef}
+                  containerClassName="text-3xl font-semibold tracking-tight text-white leading-none"
+                  textClassName="text-3xl font-semibold text-white font-sans font-bold text-center lg:text-left"
+                  scrollStart="top bottom"
+                  scrollEnd="bottom center"
+                >
+                  Welcome
+                </ScrollFloat>
+                <ScrollFloat
+                  scrollContainerRef={rightSectionRef}
+                  containerClassName="text-3xl font-semibold tracking-tight text-white leading-none mt-1"
+                  textClassName="text-3xl font-semibold text-white font-sans font-bold text-center lg:text-left"
+                  scrollStart="top bottom"
+                  scrollEnd="bottom center"
+                >
+                  back
+                </ScrollFloat>
+              </div>
+            ) : (
+              <ScrollFloat
+                scrollContainerRef={rightSectionRef}
+                containerClassName="text-3xl font-semibold tracking-tight text-white"
+                textClassName="text-3xl font-semibold text-white font-sans font-bold text-center lg:text-left"
+                scrollStart="top bottom"
+                scrollEnd="bottom center"
+              >
+                Register Operator
+              </ScrollFloat>
+            )}
             <p className="text-white/40 text-xs">
               {isLoginMode 
                 ? 'Continue to your private workspace' 

@@ -1,0 +1,50 @@
+[
+  {
+    "operatorId": "EVA-OP-674889",
+    "firstName": "John",
+    "lastName": "Doe",
+    "email": "pilot@eva-os.net",
+    "config": {
+      "frequency": "4.8 GHz",
+      "voice": "EVA-02 (Baritone)",
+      "theme": "Amber Tactical"
+    },
+    "timestamp": "2026-06-16T09:39:08.744Z"
+  },
+  {
+    "operatorId": "EVA-OP-322596",
+    "firstName": "Jack",
+    "lastName": "Harper",
+    "email": "jack@tet.net",
+    "config": {
+      "frequency": "4.8 GHz",
+      "voice": "EVA-02 (Baritone)",
+      "theme": "Amber Tactical"
+    },
+    "timestamp": "2026-06-16T09:45:44.249Z"
+  },
+  {
+    "operatorId": "EVA-OP-800545",
+    "firstName": "Jack",
+    "lastName": "Harper",
+    "email": "jack@tet.net",
+    "config": {
+      "frequency": "6.2 GHz Hyper",
+      "voice": "EVA-02 (Baritone)",
+      "theme": "Cyber Cobalt"
+    },
+    "timestamp": "2026-06-16T09:48:15.408Z"
+  },
+  {
+    "operatorId": "EVA-OP-855194",
+    "firstName": "GitHub",
+    "lastName": "Operator",
+    "email": "operator@github.com",
+    "config": {
+      "frequency": "4.8 GHz",
+      "voice": "EVA-01 (Soprano)",
+      "theme": "Monochrome Dark"
+    },
+    "timestamp": "2026-06-16T09:48:35.340Z"
+  }
+]

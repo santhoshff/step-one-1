@@ -119,25 +119,76 @@ export default function RightPanel({
     }
   };
 
-  // Text-To-Speech Synthesis helper
-  const speakText = (text: string) => {
-    if (voiceModel === 'Silent Interface' || !('speechSynthesis' in window)) return;
-    window.speechSynthesis.cancel(); // cancel current speak
-    const utterance = new SpeechSynthesisUtterance(text);
+  // Text-To-Speech Synthesis helper using ElevenLabs with browser SpeechSynthesis fallback
+  const speakText = async (text: string) => {
+    if (voiceModel === 'Silent Interface') return;
 
-    // Filter female/male voices based on model configuration
-    const voices = window.speechSynthesis.getVoices();
-    if (voiceModel.includes('EVA-01')) {
-      // Soprano / Female
-      const femaleVoice = voices.find(v => v.name.toLowerCase().includes('google us english') || v.name.toLowerCase().includes('female') || v.name.toLowerCase().includes('zira') || v.name.toLowerCase().includes('samantha'));
-      if (femaleVoice) utterance.voice = femaleVoice;
-    } else if (voiceModel.includes('EVA-02')) {
-      // Baritone / Male
-      const maleVoice = voices.find(v => v.name.toLowerCase().includes('google uk english male') || v.name.toLowerCase().includes('male') || v.name.toLowerCase().includes('david') || v.name.toLowerCase().includes('daniel'));
-      if (maleVoice) utterance.voice = maleVoice;
+    try {
+      // Cancel native speech if active
+      if ('speechSynthesis' in window) {
+        window.speechSynthesis.cancel();
+      }
+
+      // Stop previous ElevenLabs audio if it's currently playing
+      if ((window as any).evaAudio) {
+        (window as any).evaAudio.pause();
+        (window as any).evaAudio = null;
+      }
+
+      const response = await fetch('http://localhost:5000/api/tts', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ text })
+      });
+
+      if (!response.ok) {
+        throw new Error('ElevenLabs TTS request failed');
+      }
+
+      const blob = await response.blob();
+      const audioUrl = URL.createObjectURL(blob);
+      const audio = new Audio(audioUrl);
+      
+      // Store in window to allow stopping it on next trigger
+      (window as any).evaAudio = audio;
+
+      // Set status to listening to animate the waveform during playback
+      setStatus('listening');
+      
+      audio.onended = () => {
+        setStatus('online');
+        (window as any).evaAudio = null;
+      };
+
+      audio.onerror = () => {
+        setStatus('online');
+        (window as any).evaAudio = null;
+      };
+
+      await audio.play();
+    } catch (err) {
+      console.warn('[SYS] ElevenLabs TTS unavailable, falling back to local speech synthesis:', err);
+      setStatus('online');
+
+      // Fallback: Local Browser SpeechSynthesis
+      if ('speechSynthesis' in window) {
+        window.speechSynthesis.cancel();
+        const utterance = new SpeechSynthesisUtterance(text);
+        const voices = window.speechSynthesis.getVoices();
+        
+        if (voiceModel.includes('EVA-01')) {
+          const femaleVoice = voices.find(v => v.name.toLowerCase().includes('google us english') || v.name.toLowerCase().includes('female') || v.name.toLowerCase().includes('zira') || v.name.toLowerCase().includes('samantha'));
+          if (femaleVoice) utterance.voice = femaleVoice;
+        } else if (voiceModel.includes('EVA-02')) {
+          const maleVoice = voices.find(v => v.name.toLowerCase().includes('google uk english male') || v.name.toLowerCase().includes('male') || v.name.toLowerCase().includes('david') || v.name.toLowerCase().includes('daniel'));
+          if (maleVoice) utterance.voice = maleVoice;
+        }
+        utterance.rate = 1.05;
+        window.speechSynthesis.speak(utterance);
+      }
     }
-    utterance.rate = 1.05;
-    window.speechSynthesis.speak(utterance);
   };
 
   // Handle Command Submission

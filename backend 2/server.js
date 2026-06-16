@@ -351,6 +351,54 @@ app.post('/api/save-config', authenticateToken, async (req, res) => {
   }
 });
 
+// Route: Text to Speech using ElevenLabs
+app.post('/api/tts', async (req, res) => {
+  try {
+    const { text } = req.body;
+    if (!text) {
+      return res.status(400).json({ status: 'error', message: 'Text content is required' });
+    }
+
+    const apiKey = process.env.ELEVENLABS_API_KEY;
+    if (!apiKey) {
+      return res.status(500).json({ status: 'error', message: 'ElevenLabs API key is not configured' });
+    }
+
+    const voiceId = process.env.ELEVENLABS_VOICE_ID || 'pNInz6obpgq5paqqcfxt'; // Default to Adam (Deep Voice)
+
+    const response = await fetch(`https://api.elevenlabs.io/v1/text-to-speech/${voiceId}`, {
+      method: 'POST',
+      headers: {
+        'xi-api-key': apiKey,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        text,
+        model_id: 'eleven_monolingual_v1',
+        voice_settings: {
+          stability: 0.5,
+          similarity_boost: 0.75,
+        },
+      }),
+    });
+
+    if (!response.ok) {
+      const errorText = await response.text();
+      console.error('[-] ElevenLabs API error:', errorText);
+      return res.status(response.status).json({ status: 'error', message: 'ElevenLabs API call failed' });
+    }
+
+    // Set response headers and pipe array buffer back
+    res.setHeader('Content-Type', 'audio/mpeg');
+    const arrayBuffer = await response.arrayBuffer();
+    const buffer = Buffer.from(arrayBuffer);
+    return res.send(buffer);
+  } catch (error) {
+    console.error('[-] Text-to-speech route error:', error);
+    return res.status(500).json({ status: 'error', message: 'Internal speech synthesis error' });
+  }
+});
+
 app.listen(PORT, () => {
   console.log(`[SYS] EVA AI Neural Core listening on port ${PORT}`);
 });

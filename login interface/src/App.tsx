@@ -8,6 +8,7 @@ import AnalyticsPanel from './components/AnalyticsPanel';
 import AICore from './components/AICore';
 import RightPanel from './components/RightPanel';
 import StaggeredMenu from './components/StaggeredMenu';
+import StartupSequence from './components/StartupSequence';
 
 interface ConfigData {
   frequency: string;
@@ -33,6 +34,10 @@ export default function App() {
   const [token, setToken] = useState<string | null>(null);
   const [operator, setOperator] = useState<OperatorData | null>(null);
   const [isInitialized, setIsInitialized] = useState(false);
+  
+  // Greeting system states
+  const [showStartupSequence, setShowStartupSequence] = useState(false);
+  const [isFirstLogin, setIsFirstLogin] = useState(false);
   
   // Command center runtime states
   const [aiStatus, setAiStatus] = useState<'online' | 'thinking' | 'listening' | 'processing'>('online');
@@ -69,9 +74,11 @@ export default function App() {
     localStorage.setItem('eva_session_token', newToken);
     setToken(newToken);
     setOperator(newOperator);
-    // If user already has config settings saved on backend, go directly to Command Center
+    // If user already has config settings saved on backend, go directly to Command Center and play welcome greeting
     if (newOperator.config && newOperator.config.theme) {
       setIsInitialized(true);
+      setShowStartupSequence(true);
+      setIsFirstLogin(false);
     }
   };
 
@@ -97,6 +104,8 @@ export default function App() {
         config
       });
       setIsInitialized(true);
+      setShowStartupSequence(true);
+      setIsFirstLogin(true);
     } catch (err) {
       console.error('[-] Config save error:', err);
       // Fallback: apply client configurations locally if backend connection fails
@@ -105,6 +114,8 @@ export default function App() {
         config
       });
       setIsInitialized(true);
+      setShowStartupSequence(true);
+      setIsFirstLogin(true);
     }
   };
 
@@ -251,6 +262,15 @@ export default function App() {
         )}
 
       </AnimatePresence>
+
+      {showStartupSequence && operator && (
+        <StartupSequence
+          operatorName={operator.firstName}
+          isFirstLogin={isFirstLogin}
+          voiceModel={operator.config?.voice || 'Silent Interface'}
+          onComplete={() => setShowStartupSequence(false)}
+        />
+      )}
     </div>
   );
 }

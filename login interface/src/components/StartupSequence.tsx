@@ -1,11 +1,13 @@
 import { useState, useEffect, useRef } from 'react';
 import { motion } from 'motion/react';
 import { Terminal, Shield, Cpu, Activity } from 'lucide-react';
+import EvilEye from './EvilEye';
 
 interface StartupSequenceProps {
   operatorName: string;
   isFirstLogin: boolean;
   voiceModel: string;
+  theme: string;
   onComplete: () => void;
 }
 
@@ -13,6 +15,7 @@ export default function StartupSequence({
   operatorName,
   isFirstLogin,
   voiceModel,
+  theme,
   onComplete
 }: StartupSequenceProps) {
   const [statusText, setStatusText] = useState('INITIATING LINK...');
@@ -22,6 +25,19 @@ export default function StartupSequence({
   
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const droneRef = useRef<{ stop: () => void } | null>(null);
+
+  // Map active interface theme to specific HEX color values for the EvilEye
+  const getThemeColor = () => {
+    switch (theme) {
+      case 'Amber Tactical': return '#f59e0b';
+      case 'Cyber Cobalt': return '#3b82f6';
+      case 'Neon Violet': return '#8b5cf6';
+      case 'EVA Quantum Purple': return '#d946ef';
+      case 'Monochrome Dark':
+      default:
+        return '#38bdf8'; // Sleek cyan by default
+    }
+  };
 
   // Web Audio Synth low drone
   const startAmbientHum = () => {
@@ -291,16 +307,21 @@ export default function StartupSequence({
             <circle cx="50" cy="50" r="45" stroke="var(--color-theme-accent, #3b82f6)" strokeWidth="1" strokeDasharray="5 15" fill="none" className="opacity-60" />
           </svg>
 
-          {/* Center Orb */}
-          <div className="absolute w-12 h-12 rounded-full bg-var(--color-theme-accent, #3b82f6) opacity-30 blur-lg animate-pulse" style={{ backgroundColor: 'var(--color-theme-accent, #3b82f6)' }} />
-          <motion.div
-            animate={isVoiceActive ? { scale: [1, 1.25, 1] } : { scale: [1, 1.05, 1] }}
-            transition={isVoiceActive ? { duration: 0.8, repeat: Infinity } : { duration: 2.5, repeat: Infinity }}
-            className="absolute w-8 h-8 rounded-full border border-white/20 flex items-center justify-center shadow-[0_0_20px_var(--color-theme-accent,rgba(59,130,246,0.5))]"
-            style={{ borderColor: 'var(--color-theme-accent, rgba(255,255,255,0.2))', boxShadow: '0 0 20px var(--color-theme-accent, rgba(59,130,246,0.3))' }}
-          >
-            <div className="w-3.5 h-3.5 rounded-full bg-white" />
-          </motion.div>
+          {/* Center WebGL Core EvilEye */}
+          <div className="absolute w-28 h-28 flex items-center justify-center pointer-events-none rounded-full overflow-hidden">
+            <EvilEye
+              eyeColor={getThemeColor()}
+              intensity={isVoiceActive ? 2.0 : 1.3}
+              pupilSize={0.55}
+              irisWidth={0.2}
+              glowIntensity={isVoiceActive ? 0.65 : 0.3}
+              scale={0.8}
+              noiseScale={1.1}
+              pupilFollow={1.2}
+              flameSpeed={isVoiceActive ? 1.6 : 0.75}
+              backgroundColor="#000000"
+            />
+          </div>
         </div>
 
         {/* Sync Status Texts */}

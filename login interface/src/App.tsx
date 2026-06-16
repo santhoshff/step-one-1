@@ -268,6 +268,7 @@ export default function App() {
           operatorName={operator.firstName}
           isFirstLogin={isFirstLogin}
           voiceModel={operator.config?.voice || 'Silent Interface'}
+          theme={activeTheme}
           onComplete={() => setShowStartupSequence(false)}
         />
       )}

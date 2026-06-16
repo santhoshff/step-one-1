@@ -13,7 +13,21 @@ dotenv.config();
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
-const DATA_FILE = path.join(__dirname, 'operators.json');
+
+// Allow configuring a custom storage directory (e.g., Google Drive) via env variables
+const STORAGE_DIR = process.env.STORAGE_DIR || __dirname;
+
+// Automatically create directory if it doesn't exist
+if (!fs.existsSync(STORAGE_DIR)) {
+  try {
+    fs.mkdirSync(STORAGE_DIR, { recursive: true });
+    console.log(`[SYS] Created storage directory: ${STORAGE_DIR}`);
+  } catch (err) {
+    console.error(`[-] Failed to create custom storage directory:`, err.message);
+  }
+}
+
+const DATA_FILE = path.join(STORAGE_DIR, 'operators.json');
 
 const app = express();
 const PORT = process.env.PORT || 5000;

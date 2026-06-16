@@ -42,8 +42,8 @@
     "email": "raman21122003@gamil.com",
     "passwordHash": "$2b$10$XvoljdO0H3ohTZCKaY/NTuNnG7YapGV.K3dDVZrCTzr39GjPvk10m",
     "config": {
-      "frequency": "Quantum Sync",
-      "voice": "EVA-01 (Soprano)",
+      "frequency": "6.2 GHz Hyper",
+      "voice": "Silent Interface",
       "theme": "Amber Tactical",
       "personality": "Assistant",
       "responseSpeed": "Fast",
@@ -52,5 +52,23 @@
       "privacyMode": "Standard"
     },
     "timestamp": "2026-06-16T10:19:40.611Z"
+  },
+  {
+    "operatorId": "EVA-OP-999563",
+    "firstName": "GitHub",
+    "lastName": "Operator",
+    "email": "operator@github.com",
+    "passwordHash": "$2b$10$IRKCK7hKmv./ICcHNtIYfuz8wjGle9EZ6DmmVrEbe4hKkfwx66KNy",
+    "config": {
+      "frequency": "4.8 GHz",
+      "voice": "Silent Interface",
+      "theme": "Monochrome Dark",
+      "personality": "Assistant",
+      "responseSpeed": "Fast",
+      "reasoningDepth": "Standard",
+      "memoryMode": "Temporary",
+      "privacyMode": "Standard"
+    },
+    "timestamp": "2026-06-16T11:14:54.242Z"
   }
 ]
